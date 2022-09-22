@@ -13,23 +13,22 @@ contract MyNFTTest is Test {
         my_nft = new MyNFT("MyNFT", "MYT", "https://www.example.com");
     }
 
-    function testMintTo() public {
-        address recipient = address(86069);
-        (bool sendTx, ) = payable(recipient).call{value: 1 ether}("");
-        if (!sendTx) {
-            revert SendEtherFailed();
-        }
+    function testMintTo(address recipient) public {
+        vm.deal(recipient, 1 ether);
         vm.prank(recipient);
         my_nft.mintTo{value: 0.08 ether}(recipient);
         assertEq("https://www.example.com1", my_nft.tokenURI(1));
     }
 
     function testWithdrawPayments() public {
-        testMintTo();
-
         address owner = my_nft.owner();
+        address recipient = address(3);
+
+        testMintTo(recipient);
+
         vm.prank(owner);
-        my_nft.withdrawPayments(payable(address(1)));
+        my_nft.withdrawPayments(payable(recipient));
+        assertEq(1 ether, recipient.balance);
     }
 
     function testFailMintTo(address recipient) public {
@@ -39,9 +38,9 @@ contract MyNFTTest is Test {
         my_nft.mintTo{value: 0.08 ether}(recipient);
     }
 
-    function testFailWithdrawPayments(address user) public {
-        vm.assume(user != my_nft.owner());
-        vm.prank(user);
-        my_nft.withdrawPayments(payable(user));
+    function testFailWithdrawPayments(address recipient) public {
+        vm.assume(recipient != my_nft.owner());
+        vm.prank(recipient);
+        my_nft.withdrawPayments(payable(recipient));
     }
 }

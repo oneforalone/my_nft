@@ -6,12 +6,17 @@ import "../src/MyNFT.sol";
 
 contract DeployMyNFT is Script {
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        vm.startBroadcast(deployerPrivateKey);
+        address deployer = vm.addr(vm.envUint("PRIVATE_KEY"));
+
+        console.log("The Deployer address:", deployer);
+        console.log("Balance is:", deployer.balance);
+
+        vm.startBroadcast(deployer);
 
         MyNFT nft = new MyNFT("MyNFT", "MYT", "https://www.example.com");
+
         vm.stopBroadcast();
 
-        console.log("MyNFT deployed at: ", address(nft));
+        console.log("MyNFT deployed at:", address(nft));
     }
 }
