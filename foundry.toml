@@ -4,3 +4,16 @@ out = 'out'
 libs = ['lib']
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
+remappings = [
+    "@openzeppelin-contracts/=lib/openzeppelin-contracts/",
+    "@solmate/=lib/solmate/src/",
+    "@forge-std/=lib/forge-std/src/",
+    "@ds-test/=lib/forge-std/lib/ds-test/src/"
+]
+
+[rpc_endpoints]
+anvil = "${ANVIL_RPC_URL}"
+
+[etherscan]
+mainnet = { key = "${ETHERSCAN_KEY}" }
